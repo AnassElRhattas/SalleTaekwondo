@@ -3,13 +3,20 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClientController;
 use Illuminate\Support\Facades\Route;
+use Carbon\Carbon;
+use App\Models\Client;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $totalClients = Client::count();
+
+    // Récupérer tous les clients dont l'inscription a 30 jours ou plus
+    $expiringClients = Client::where('created_at', '<=', Carbon::now()->subDays(30))->get();
+
+    return view('dashboard', compact('totalClients', 'expiringClients'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
