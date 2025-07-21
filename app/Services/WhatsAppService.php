@@ -30,6 +30,8 @@ class WhatsAppService
                 'message' => $this->buildReminderMessage($client->name)
             ]);
 
+            dd($response->body());
+
             if ($response->successful()) {
                 Log::info("Reminder sent successfully to {$client->name}");
                 return true;
