@@ -35,7 +35,7 @@ class ClientController extends Controller
         }
 
         $validated['payer_abon'] = now();
-        
+
         Client::create($validated);
 
         return redirect()->route('clients.index')
@@ -74,4 +74,6 @@ class ClientController extends Controller
         return redirect()->route('clients.index')
             ->with('success', 'Client deleted successfully!');
     }
+
+    
 }

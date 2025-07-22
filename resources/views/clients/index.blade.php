@@ -90,8 +90,13 @@
                     </div>
                 </div>
                 <div class="flex justify-end mt-6">
-                    <button onclick="closeDetailsModal()" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg">Close</button>
-                </div>
+    <button id="validatePaymentBtn"
+            class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg mr-3">
+        Valider le paiement
+    </button>
+    <button onclick="closeDetailsModal()" class="bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg">Close</button>
+</div>
+
             </div>
         </div>
     </div>
