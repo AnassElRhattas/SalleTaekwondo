@@ -181,6 +181,12 @@
             document.getElementById('detailRegistrationDate').textContent = registrationDate;
             document.getElementById('detailLastPayer').textContent = lastPayer;
             document.getElementById('detailsModal').classList.remove('hidden');
+
+            // Update the validate payment button to include the client ID
+            const validatePaymentBtn = document.getElementById('validatePaymentBtn');
+            validatePaymentBtn.onclick = function() {
+                window.location.href = `/clients/${id}/validate-payment`;
+            };
         }
 
         function closeDetailsModal() {

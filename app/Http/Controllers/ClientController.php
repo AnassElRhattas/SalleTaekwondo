@@ -6,6 +6,7 @@ use App\Models\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Carbon\Carbon;
 
 class ClientController extends Controller
 {
@@ -73,6 +74,15 @@ class ClientController extends Controller
 
         return redirect()->route('clients.index')
             ->with('success', 'Client deleted successfully!');
+    }
+
+    public function validatePayment(Client $client): RedirectResponse
+    {
+        $client->payer_abon = Carbon::parse($client->payer_abon)->addMonth();
+        $client->save();
+
+        return redirect()->route('clients.index')
+            ->with('success', 'Payment validated successfully!');
     }
 
     
