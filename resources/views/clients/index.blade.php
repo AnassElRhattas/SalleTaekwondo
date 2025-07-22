@@ -37,7 +37,7 @@
                                         <td class="px-6 py-4">{{ $client->address }}</td>
                                         <td class="px-6 py-4">{{ $client->created_at }}</td>
                                         <td class="px-6 py-4 flex space-x-2">
-                                            <button onclick="viewDetails({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}', '{{ $client->created_at }}')" 
+                                            <button onclick="viewDetails({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}', '{{ $client->created_at }}', '{{ $client->payer_abon }}')" 
                                                 class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">View</button>
                                             <button onclick="openEditModal({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}')" 
                                                 class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">Edit</button>
@@ -83,6 +83,10 @@
                     <div>
                         <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Registration Date</h4>
                         <p id="detailRegistrationDate" class="text-lg text-gray-900 dark:text-white"></p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Last Payer</h4>
+                        <p id="detailLastPayer" class="text-lg text-gray-900 dark:text-white"></p>
                     </div>
                 </div>
                 <div class="flex justify-end mt-6">
@@ -164,12 +168,13 @@
             document.getElementById('editModal').classList.add('hidden');
         }
 
-        function viewDetails(id, name, birthDate, phone, address, registrationDate) {
+        function viewDetails(id, name, birthDate, phone, address, registrationDate, lastPayer) {
             document.getElementById('detailName').textContent = name;
             document.getElementById('detailBirthDate').textContent = birthDate;
             document.getElementById('detailPhone').textContent = phone;
             document.getElementById('detailAddress').textContent = address;
             document.getElementById('detailRegistrationDate').textContent = registrationDate;
+            document.getElementById('detailLastPayer').textContent = lastPayer;
             document.getElementById('detailsModal').classList.remove('hidden');
         }
 

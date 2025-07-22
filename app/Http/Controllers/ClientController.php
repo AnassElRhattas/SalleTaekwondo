@@ -34,6 +34,8 @@ class ClientController extends Controller
             $validated['profile_picture'] = $request->file('profile_picture')->store('profile-pictures', 'public');
         }
 
+        $validated['payer_abon'] = now();
+        
         Client::create($validated);
 
         return redirect()->route('clients.index')

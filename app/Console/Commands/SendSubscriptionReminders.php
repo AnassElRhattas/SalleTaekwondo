@@ -24,7 +24,7 @@ class SendSubscriptionReminders extends Command
         $thirtyDaysAgo = Carbon::now()->subDays(30);
 
         // Get clients who registered 30 or more days ago
-        $clients = Client::where('created_at', '<=', $thirtyDaysAgo)->get();
+        $clients = Client::where('payer_abon', '<=', $thirtyDaysAgo)->get();
 
         if ($clients->isEmpty()) {
             $this->info('No clients found needing reminders.');

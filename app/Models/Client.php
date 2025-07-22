@@ -14,7 +14,8 @@ class Client extends Model
         'phone',
         'address',
         'birth_date',
-        'profile_picture'
+        'profile_picture',
+        'payer_abon'
     ];
 
     // protected $casts = [
