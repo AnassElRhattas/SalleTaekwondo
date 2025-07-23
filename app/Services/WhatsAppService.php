@@ -67,6 +67,6 @@ class WhatsAppService
 
     protected function buildReminderMessage(string $name): string
     {
-        return "Bonjour {$name}, votre abonnement à la salle Taekwondo est presque expiré. Merci de passer le renouveler.";
+        return "Bonjour {$name}, votre abonnement à la salle Taekwondo AASTKD est presque expiré. Merci de passer le renouveler.";
     }
 }

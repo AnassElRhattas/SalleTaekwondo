@@ -14,7 +14,7 @@ Route::get('/dashboard', function () {
     $totalClients = Client::count();
 
     // Récupérer tous les clients dont l'inscription a 30 jours ou plus
-    $expiringClients = Client::where('created_at', '<=', Carbon::now()->subDays(30))->get();
+    $expiringClients = Client::where('payer_abon', '<=', Carbon::now()->subDays(30))->get();
 
     return view('dashboard', compact('totalClients', 'expiringClients'));
 })->middleware(['auth', 'verified'])->name('dashboard');
