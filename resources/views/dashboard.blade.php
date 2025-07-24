@@ -25,6 +25,7 @@
                                 <tr>
                                     <th scope="col" class="px-6 py-3">Nom</th>
                                     <th scope="col" class="px-6 py-3">Date d'inscription</th>
+                                    <th scope="col" class="px-6 py-3">Derniere abonnement</th>
                                     <th scope="col" class="px-6 py-3">Jours restants</th>
                                     <th scope="col" class="px-6 py-3">Statut</th>
                                 </tr>
@@ -33,7 +34,8 @@
                                 @foreach ($expiringClients as $client)
                                     <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                         <td class="px-6 py-4">{{ $client->name }}</td>
-                                        <td class="px-6 py-4">{{ $client->created_at->format('d/m/Y') }}</td>
+                                        <td class="px-6 py-4">{{ $client->created_at->format('d-m-Y') }}</td>
+                                        <td class="px-6 py-4">{{ $client->payer_abon }}</td>
                                         <td class="px-6 py-4">{{ $client->days_remaining }}</td>
                                         <td class="px-6 py-4">
                                             @if ($client->days_remaining < 0)

@@ -28,11 +28,15 @@ class ClientController extends Controller
             'birth_date' => 'required|date',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:1000',
-            'profile_picture' => 'nullable|image|max:2048'
+            'profile_picture' => 'nullable|image|max:2048',
+            'Birth_contract' => 'nullable|image|max:2048'
         ]);
 
         if ($request->hasFile('profile_picture')) {
             $validated['profile_picture'] = $request->file('profile_picture')->store('profile-pictures', 'public');
+        }
+        if ($request->hasFile('Birth_contract')) {
+            $validated['Birth_contract'] = $request->file('Birth_contract')->store('Birth-contract', 'public');
         }
 
         $validated['payer_abon'] = now();

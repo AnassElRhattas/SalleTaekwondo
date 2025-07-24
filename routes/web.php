@@ -13,11 +13,22 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     $totalClients = Client::count();
 
-    // Récupérer tous les clients dont l'inscription a 30 jours ou plus
+    // Tous les clients dont l'inscription est ancienne de 30 jours ou plus
     $expiringClients = Client::where('payer_abon', '<=', Carbon::now()->subDays(30))->get();
+
+    foreach ($expiringClients as $client) {
+        $nextPaymentDate = Carbon::parse($client->payer_abon)->addMonth()->startOfDay();
+        $today = Carbon::now()->startOfDay();
+    
+        $daysRemaining = $nextPaymentDate->diffInDays($today, false);
+        $client->days_remaining = $daysRemaining;
+    }
+    
+    
 
     return view('dashboard', compact('totalClients', 'expiringClients'));
 })->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

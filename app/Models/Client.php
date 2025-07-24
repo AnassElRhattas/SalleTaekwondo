@@ -15,6 +15,7 @@ class Client extends Model
         'address',
         'birth_date',
         'profile_picture',
+        'Birth_contract',
         'payer_abon'
     ];
 

@@ -37,7 +37,7 @@
                                         <td class="px-6 py-4">{{ $client->address }}</td>
                                         <td class="px-6 py-4">{{ $client->created_at }}</td>
                                         <td class="px-6 py-4 flex space-x-2">
-                                            <button onclick="viewDetails({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}', '{{ $client->created_at }}', '{{ $client->payer_abon }}')" 
+                                            <button onclick="viewDetails({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}', '{{ $client->created_at }}', '{{ $client->payer_abon }}', '{{ $client->profile_picture ?? "/default-avatar.jpg" }}')"
                                                 class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">View</button>
                                             <button onclick="openEditModal({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}')" 
                                                 class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out transform hover:scale-105">Edit</button>
@@ -63,6 +63,12 @@
         <div class="relative top-20 mx-auto p-8 border-0 w-[500px] shadow-2xl rounded-xl bg-white dark:bg-gray-800 transform transition-all duration-300">
             <div class="mt-2">
                 <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">Client Details</h3>
+                <!-- Add Profile Picture Section -->
+                <div class="flex justify-center mb-6">
+                    <div class="w-40 h-32 overflow-hidden border-4 border-gray-200 dark:border-gray-600 rounded-lg">
+                        <img id="detailProfilePic" src="/default-avatar.jpg" alt="Profile Picture" class="w-full h-full object-cover">
+                    </div>
+                </div>
                 <div class="space-y-4">
                     <div>
                         <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Name</h4>
@@ -173,13 +179,14 @@
             document.getElementById('editModal').classList.add('hidden');
         }
 
-        function viewDetails(id, name, birthDate, phone, address, registrationDate, lastPayer) {
+        function viewDetails(id, name, birthDate, phone, address, registrationDate, lastPayer, profilePicture) {
             document.getElementById('detailName').textContent = name;
             document.getElementById('detailBirthDate').textContent = birthDate;
             document.getElementById('detailPhone').textContent = phone;
             document.getElementById('detailAddress').textContent = address;
             document.getElementById('detailRegistrationDate').textContent = registrationDate;
             document.getElementById('detailLastPayer').textContent = lastPayer;
+            document.getElementById('detailProfilePic').src = `/storage/${profilePicture}`;
             document.getElementById('detailsModal').classList.remove('hidden');
 
             // Update the validate payment button to include the client ID
