@@ -75,7 +75,7 @@
         <section class="py-20 bg-gray-50 dark:bg-gray-900">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">Nos Installations</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                     <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
                         <h3 class="text-2xl font-semibold mb-4 text-red-600 dark:text-red-500">Zone d'Entraînement</h3>
                         <p class="text-gray-700 dark:text-gray-300">Salle d'entraînement spacieuse avec tapis et équipements professionnels.</p>
@@ -84,6 +84,106 @@
                         <h3 class="text-2xl font-semibold mb-4 text-red-600 dark:text-red-500">Équipements d'Entraînement</h3>
                         <p class="text-gray-700 dark:text-gray-300">Gamme complète d'équipements incluant paos, boucliers et systèmes de score électroniques.</p>
                     </div>
+                </div>
+                
+                <!-- Galerie d'images -->
+                <h3 class="text-3xl font-semibold text-center mb-8 text-gray-900 dark:text-white">Galerie de Notre Dojo</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Image 1 -->
+                    <div class="overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+                        <div class="aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm font-medium">Salle principale</p>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-gray-800">
+                            <h4 class="font-semibold text-red-600 dark:text-red-500">Salle d'entraînement principale</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Espace spacieux avec tapis professionnels</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Image 2 -->
+                    <div class="overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+                        <div class="aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm font-medium">Zone d'échauffement</p>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-gray-800">
+                            <h4 class="font-semibold text-red-600 dark:text-red-500">Zone d'échauffement</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Espace dédié aux exercices préparatoires</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Image 3 -->
+                    <div class="overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+                        <div class="aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm font-medium">Équipements</p>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-gray-800">
+                            <h4 class="font-semibold text-red-600 dark:text-red-500">Équipements de protection</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Matériel complet pour un entraînement sécurisé</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Image 4 -->
+                    <div class="overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+                        <div class="aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm font-medium">Zone de combat</p>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-gray-800">
+                            <h4 class="font-semibold text-red-600 dark:text-red-500">Zone de combat</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Espace réglementaire pour les compétitions</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Image 5 -->
+                    <div class="overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+                        <div class="aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm font-medium">Vestiaires</p>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-gray-800">
+                            <h4 class="font-semibold text-red-600 dark:text-red-500">Vestiaires</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Espaces confortables pour se changer</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Image 6 -->
+                    <div class="overflow-hidden rounded-lg shadow-md transition-transform duration-300 hover:scale-105">
+                        <div class="aspect-w-16 aspect-h-9 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+                            <svg class="w-12 h-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="absolute inset-0 flex items-center justify-center text-gray-500 dark:text-gray-400 text-sm font-medium">Espace détente</p>
+                        </div>
+                        <div class="p-4 bg-white dark:bg-gray-800">
+                            <h4 class="font-semibold text-red-600 dark:text-red-500">Espace détente</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Zone de récupération après l'entraînement</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <p class="text-gray-600 dark:text-gray-400 italic">* Les images sont des placeholders. Remplacez-les par des photos réelles de votre dojo.</p>
+                    <p class="mt-4">
+                        <a href="#" class="inline-flex items-center text-red-600 dark:text-red-500 font-medium hover:underline">
+                            Voir toutes les photos
+                            <svg class="ml-2 w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </a>
+                    </p>
                 </div>
             </div>
         </section>
