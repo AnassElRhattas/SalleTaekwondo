@@ -36,11 +36,18 @@
                                         <td class="px-6 py-4">{{ $client->name }}</td>
                                         <td class="px-6 py-4">{{ $client->created_at->format('d-m-Y') }}</td>
                                         <td class="px-6 py-4">{{ $client->payer_abon }}</td>
-                                        <td class="px-6 py-4">{{ $client->days_remaining }}</td>
+                                        <td class="px-6 py-4">
+    @if ($client->days_remaining < 0)
+        <span class="px-1 py-1 text-xs font-bold text-red-500 rounded-full">{{ $client->days_remaining }}</span>
+    @else 
+        <span class="px-1 py-1 text-xs font-bold text-green-600 rounded-full">{{ $client->days_remaining }}</span>
+    @endif
+</td>
+
                                         <td class="px-6 py-4">
                                             @if ($client->days_remaining < 0)
                                                 <span class="px-2 py-1 text-xs font-semibold text-white bg-red-500 rounded-full">Expiré</span>
-                                            @elseif ($client->days_remaining <= 7)
+                                            @elseif ($client->days_remaining <= 3)
                                                 <span class="px-2 py-1 text-xs font-semibold text-white bg-yellow-500 rounded-full">Expire bientôt</span>
                                             @else
                                                 <span class="px-2 py-1 text-xs font-semibold text-white bg-green-500 rounded-full">Actif</span>
