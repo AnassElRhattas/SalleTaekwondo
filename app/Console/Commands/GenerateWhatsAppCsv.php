@@ -40,7 +40,7 @@ class GenerateWhatsAppCsv extends Command
         }
 
         // Generate CSV content
-        $csvContent = "Phone,Message\n";
+        $csvContent = "Name,Phone,Name,PhraseExperation,Days\n";
         
         foreach ($clients as $client) {
             // Format phone number
@@ -54,23 +54,28 @@ class GenerateWhatsAppCsv extends Command
             // Clean client name to avoid encoding issues
             $clientName = $this->cleanName($client->name);
             
-            // Generate appropriate message based on expiration status
+            // Generate appropriate phrase based on expiration status
             if ($daysUntilExpiration < 0) {
                 // Subscription has already expired
-                $message = "Bonjour {$clientName}, votre abonnement a expiré il y a " . abs($daysUntilExpiration) . " jours. Veuillez régulariser votre paiement.";
+                $phrase = "انتهت صلاحية اشتراكك منذ فترة";
+                $days = abs($daysUntilExpiration);
             } else {
                 // Subscription will expire soon
-                $message = "Bonjour {$clientName}, votre abonnement expire dans {$daysUntilExpiration} jours. Merci de le renouveler.";
+                $phrase = "تنتهي صلاحية اشتراكك في";
+                $days = $daysUntilExpiration;
             }
             
             // Add to CSV content
-            $csvContent .= "{$phone},\"$message\"\n";
+            $csvContent .= "{$clientName},{$phone},{$clientName},{$phrase},{$days}\n";
         }
         
         // Save CSV file with UTF-8 BOM to ensure proper encoding
         $filename = 'whatsapp_reminders_' . $today->format('Y-m-d') . '.csv';
         $csvContentWithBOM = "\xEF\xBB\xBF" . $csvContent; // Add UTF-8 BOM
         Storage::disk('public')->put($filename, $csvContentWithBOM);
+        
+        // Also create a copy in the root directory for easier access
+        file_put_contents(public_path($filename), $csvContentWithBOM);
         
         $this->info("CSV file generated successfully: {$filename}");
         $this->info("Total clients included: {$clients->count()}");

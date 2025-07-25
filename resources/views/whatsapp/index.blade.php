@@ -14,8 +14,9 @@
                     <div class="mb-6 bg-blue-50 p-4 rounded-lg">
                         <p class="text-blue-700">
                             <i class="fas fa-info-circle mr-2"></i>
-                            Ce système génère un fichier CSV contenant les numéros de téléphone et messages personnalisés 
-                            pour les clients dont l'abonnement expire dans les 3 prochains jours ou a déjà expiré.
+                            Ce système génère un fichier CSV contenant les informations nécessaires pour envoyer des rappels WhatsApp
+                            aux clients dont l'abonnement expire dans les 3 prochains jours ou a déjà expiré. Le fichier est formaté
+                            spécifiquement pour être utilisé avec l'extension WA Web Utils.
                         </p>
                     </div>
                     
@@ -66,6 +67,18 @@
                             <li>Vérifiez que les messages sont correctement formatés</li>
                             <li>Envoyez les messages via l'extension</li>
                         </ol>
+                    </div>
+                    
+                    <div class="mt-4 bg-yellow-50 p-4 rounded-lg">
+                        <h4 class="font-medium mb-2">Format du fichier CSV</h4>
+                        <p class="mb-2">Le fichier CSV généré contient les colonnes suivantes :</p>
+                        <ul class="list-disc list-inside space-y-1 ml-2">
+                            <li><strong>Name</strong> : Nom du client</li>
+                            <li><strong>Phone</strong> : Numéro de téléphone au format international (212...)</li>
+                            <li><strong>Name</strong> : Nom du client (répété)</li>
+                            <li><strong>PhraseExperation</strong> : Phrase d'expiration ("votre abonnement expire dans" ou "votre abonnement a expiré il y a")</li>
+                            <li><strong>Days</strong> : Nombre de jours avant/après expiration</li>
+                        </ul>
                     </div>
                     
                     @if (session('error'))
