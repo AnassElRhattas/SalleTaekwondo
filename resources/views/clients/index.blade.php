@@ -230,6 +230,10 @@
                                 <p id="detailBirthDate" class="text-lg text-gray-900 dark:text-white font-medium"></p>
                             </div>
                             <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Âge</h4>
+                                <p id="detailAge" class="text-lg text-gray-900 dark:text-white font-medium"></p>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                                 <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Téléphone</h4>
                                 <p id="detailPhone" class="text-lg text-gray-900 dark:text-white font-medium"></p>
                             </div>
@@ -423,6 +427,26 @@
         function viewDetails(id, name, birthDate, phone, address, registrationDate, lastPayer, profilePicture, group) {
             document.getElementById('detailName').textContent = name;
             document.getElementById('detailBirthDate').textContent = birthDate;
+            
+            // Calculer l'âge à partir de la date de naissance
+            const calculateAge = (birthDateStr) => {
+                const birthDateParts = birthDateStr.split('-');
+                if (birthDateParts.length !== 3) return 'N/A';
+                
+                const birthDate = new Date(birthDateParts[0], birthDateParts[1] - 1, birthDateParts[2]);
+                const today = new Date();
+                
+                let age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                
+                return age;
+            };
+            
+            document.getElementById('detailAge').textContent = calculateAge(birthDate) + ' ans';
             document.getElementById('detailPhone').textContent = phone;
             document.getElementById('detailAddress').textContent = address;
             document.getElementById('detailRegistrationDate').textContent = registrationDate;

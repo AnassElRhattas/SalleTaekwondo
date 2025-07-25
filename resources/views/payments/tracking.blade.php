@@ -18,22 +18,40 @@
 
             <!-- Filtres -->
             <div class="mb-6 bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <form action="{{ route('payments.tracking') }}" method="GET" class="flex flex-wrap gap-4 items-end">
-                    <div class="flex-grow">
-                        <label for="group" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Filtrer par groupe</label>
-                        <select name="group" id="group" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 shadow-sm">
-                            <option value="all" {{ request('group') == 'all' ? 'selected' : '' }}>Tous les groupes</option>
-                            <option value="Box" {{ request('group') == 'Box' ? 'selected' : '' }}>Box</option>
-                            <option value="Taekwondo" {{ request('group') == 'Taekwondo' ? 'selected' : '' }}>Taekwondo</option>
-                            <option value="Karaté" {{ request('group') == 'Karaté' ? 'selected' : '' }}>Karaté</option>
-                        </select>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <!-- Barre de recherche -->
+                    <div class="w-full md:w-1/2">
+                        <label for="searchInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Rechercher un client</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input type="text" id="searchInput" class="pl-10 w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 shadow-sm" placeholder="Nom du client...">
+                        </div>
                     </div>
-                    <div>
-                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
-                            Filtrer
-                        </button>
+                    
+                    <!-- Filtre par groupe -->
+                    <div class="w-full md:w-1/2">
+                        <form action="{{ route('payments.tracking') }}" method="GET" class="flex flex-wrap gap-4 items-end">
+                            <div class="flex-grow">
+                                <label for="group" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Filtrer par groupe</label>
+                                <select name="group" id="group" class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 shadow-sm">
+                                    <option value="all" {{ request('group') == 'all' ? 'selected' : '' }}>Tous les groupes</option>
+                                    <option value="Box" {{ request('group') == 'Box' ? 'selected' : '' }}>Box</option>
+                                    <option value="Taekwondo" {{ request('group') == 'Taekwondo' ? 'selected' : '' }}>Taekwondo</option>
+                                    <option value="Karaté" {{ request('group') == 'Karaté' ? 'selected' : '' }}>Karaté</option>
+                                </select>
+                            </div>
+                            <div>
+                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-800 dark:bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-white dark:text-gray-800 uppercase tracking-widest hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150">
+                                    Filtrer
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
 
             <!-- Tableau de suivi des paiements -->
@@ -150,8 +168,8 @@
     </div>
 
     <script>
-        // Auto-hide notifications after 5 seconds
         document.addEventListener('DOMContentLoaded', function() {
+            // Auto-hide notifications after 5 seconds
             const notification = document.getElementById('notification');
             if (notification) {
                 setTimeout(function() {
@@ -162,6 +180,43 @@
                     }, 1000);
                 }, 5000);
             }
+            
+            // Fonctionnalité de recherche en temps réel
+            const searchInput = document.getElementById('searchInput');
+            const tableRows = document.querySelectorAll('tbody tr');
+            
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                tableRows.forEach(row => {
+                    const clientName = row.querySelector('td:first-child').textContent.toLowerCase().trim();
+                    
+                    if (clientName.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+                
+                // Afficher un message si aucun résultat n'est trouvé
+                const visibleRows = document.querySelectorAll('tbody tr[style=""], tbody tr[style="display: "]');
+                const noResultsMessage = document.getElementById('noResultsMessage');
+                
+                if (visibleRows.length === 0 && searchTerm !== '') {
+                    if (!noResultsMessage) {
+                        const tbody = document.querySelector('tbody');
+                        const newRow = document.createElement('tr');
+                        newRow.id = 'noResultsMessage';
+                        newRow.innerHTML = `<td colspan="${document.querySelectorAll('thead th').length}" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">Aucun client trouvé pour "${searchTerm}"</td>`;
+                        tbody.appendChild(newRow);
+                    } else {
+                        noResultsMessage.querySelector('td').textContent = `Aucun client trouvé pour "${searchTerm}"`;
+                        noResultsMessage.style.display = '';
+                    }
+                } else if (noResultsMessage) {
+                    noResultsMessage.style.display = 'none';
+                }
+            });
         });
     </script>
 </x-app-layout>
