@@ -19,7 +19,16 @@ class ClientController extends Controller
             $query->where('group', $request->group);
         }
         
+        // Recherche par nom si spécifié
+        if ($request->has('search') && !empty($request->search)) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+        
         $clients = $query->paginate(10);
+        
+        // Conserver les paramètres de recherche dans la pagination
+        $clients->appends($request->except('page'));
+        
         return view('clients.index', compact('clients'));
     }
 

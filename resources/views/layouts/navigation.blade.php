@@ -21,6 +21,9 @@
                     <x-nav-link :href="route('clients.create')" :active="request()->routeIs('clients.create')">
                         {{ __('Add Client') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('payments.tracking')" :active="request()->routeIs('payments.tracking')">
+                        {{ __('Suivi Paiements') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('whatsapp.index')" :active="request()->routeIs('whatsapp.index')">
                         {{ __('Rappels WhatsApp') }}
                     </x-nav-link>
@@ -84,6 +87,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('clients.create')" :active="request()->routeIs('clients.create')">
                 {{ __('Add Client') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('payments.tracking')" :active="request()->routeIs('payments.tracking')">
+                {{ __('Suivi Paiements') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('whatsapp.index')" :active="request()->routeIs('whatsapp.index')">
                 {{ __('Rappels WhatsApp') }}

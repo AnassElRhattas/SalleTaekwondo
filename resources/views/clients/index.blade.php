@@ -31,17 +31,34 @@
                     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                         <!-- Barre de recherche améliorée -->
                         <div class="relative w-full md:w-1/3">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                                </svg>
-                            </div>
-                            <input type="text" id="searchInput" placeholder="Rechercher un client..." class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
+                            <form action="{{ route('clients.index') }}" method="GET" class="flex">
+                                <!-- Conserver le filtre de groupe s'il est défini -->
+                                @if(request('group') && request('group') != 'all')
+                                    <input type="hidden" name="group" value="{{ request('group') }}">
+                                @endif
+                                <div class="relative w-full">
+                                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                                        </svg>
+                                    </div>
+                                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Rechercher un client..." class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
+                                </div>
+                                <button type="submit" class="ml-2 px-4 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </button>
+                            </form>
                         </div>
                         
                         <!-- Filtre par groupe -->
                         <div class="relative w-full md:w-1/3">
                             <form action="{{ route('clients.index') }}" method="GET" class="flex">
+                                <!-- Conserver le paramètre de recherche s'il est défini -->
+                                @if(request('search'))
+                                    <input type="hidden" name="search" value="{{ request('search') }}">
+                                @endif
                                 <select name="group" onchange="this.form.submit()" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
                                     <option value="all" {{ request('group') == 'all' || !request('group') ? 'selected' : '' }}>Tous les groupes</option>
                                     <option value="Box" {{ request('group') == 'Box' ? 'selected' : '' }}>Box</option>
@@ -171,7 +188,7 @@
                             
                             <!-- Pagination -->
                             <div class="px-6 py-4">
-                                {{ $clients->links() }}
+                                {{ $clients->appends(request()->query())->links() }}
                             </div>
                         @endif
                     </div>
@@ -182,7 +199,7 @@
 
     <!-- Details Modal -->
     <div id="detailsModal" class="fixed inset-0 bg-black bg-opacity-40 hidden overflow-y-auto h-full w-full backdrop-blur-sm transition-all duration-300 z-50">
-        <div class="relative top-20 mx-auto p-8 border-0 w-[500px] shadow-2xl rounded-xl bg-white dark:bg-gray-800 transform transition-all duration-300">
+        <div class="relative top-20 mx-auto p-8 border-0 w-[800px] shadow-2xl rounded-xl bg-white dark:bg-gray-800 transform transition-all duration-300">
             <div class="mt-2">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center flex-grow">Détails du client</h3>
@@ -193,41 +210,46 @@
                     </button>
                 </div>
                 
-                <!-- Photo de profil -->
-                <div class="flex justify-center mb-6">
-                    <div class="w-40 h-40 overflow-hidden border-4 border-gray-200 dark:border-gray-600 rounded-full shadow-md">
-                        <img id="detailProfilePic" src="/default-avatar.jpg" alt="Photo de profil" class="w-full h-full object-cover">
+                <div class="flex flex-row gap-8">
+                    <!-- Photo de profil -->
+                    <div class="flex-shrink-0">
+                        <div class="w-40 h-40 overflow-hidden border-4 border-gray-200 dark:border-gray-600 rounded-full shadow-md">
+                            <img id="detailProfilePic" src="/default-avatar.jpg" alt="Photo de profil" class="w-full h-full object-cover">
+                        </div>
                     </div>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                        <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Nom</h4>
-                        <p id="detailName" class="text-lg text-gray-900 dark:text-white font-medium"></p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                        <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Date de naissance</h4>
-                        <p id="detailBirthDate" class="text-lg text-gray-900 dark:text-white font-medium"></p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                        <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Téléphone</h4>
-                        <p id="detailPhone" class="text-lg text-gray-900 dark:text-white font-medium"></p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                        <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Date d'inscription</h4>
-                        <p id="detailRegistrationDate" class="text-lg text-gray-900 dark:text-white font-medium"></p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                        <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Groupe</h4>
-                        <p id="detailGroup" class="text-lg text-gray-900 dark:text-white font-medium"></p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                        <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Dernier paiement</h4>
-                        <p id="detailLastPayer" class="text-lg text-gray-900 dark:text-white font-medium"></p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg col-span-1 md:col-span-2">
-                        <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Adresse</h4>
-                        <p id="detailAddress" class="text-lg text-gray-900 dark:text-white font-medium"></p>
+                    
+                    <!-- Informations client -->
+                    <div class="flex-grow">
+                        <div class="grid grid-cols-2 gap-4 mb-4">
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Nom</h4>
+                                <p id="detailName" class="text-lg text-gray-900 dark:text-white font-medium"></p>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Date de naissance</h4>
+                                <p id="detailBirthDate" class="text-lg text-gray-900 dark:text-white font-medium"></p>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Téléphone</h4>
+                                <p id="detailPhone" class="text-lg text-gray-900 dark:text-white font-medium"></p>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Date d'inscription</h4>
+                                <p id="detailRegistrationDate" class="text-lg text-gray-900 dark:text-white font-medium"></p>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Groupe</h4>
+                                <p id="detailGroup" class="text-lg text-gray-900 dark:text-white font-medium"></p>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Dernier paiement</h4>
+                                <p id="detailLastPayer" class="text-lg text-gray-900 dark:text-white font-medium"></p>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg col-span-2">
+                                <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Adresse</h4>
+                                <p id="detailAddress" class="text-lg text-gray-900 dark:text-white font-medium"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -251,7 +273,7 @@
 
     <!-- Edit Modal -->
     <div id="editModal" class="fixed inset-0 bg-black bg-opacity-40 hidden overflow-y-auto h-full w-full backdrop-blur-sm transition-all duration-300 z-50">
-        <div class="relative top-20 mx-auto p-8 border-0 w-[500px] shadow-2xl rounded-xl bg-white dark:bg-gray-800 transform transition-all duration-300">
+        <div class="relative top-20 mx-auto p-8 border-0 w-[800px] shadow-2xl rounded-xl bg-white dark:bg-gray-800 transform transition-all duration-300">
             <div class="mt-2">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center flex-grow">Modifier le client</h3>
@@ -262,77 +284,79 @@
                     </button>
                 </div>
                 
-                <form id="editForm" method="POST" class="space-y-6">
+                <form id="editForm" method="POST">
                     @csrf
                     @method('PATCH')
                     
-                    <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg mb-4">
-                        <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="name">Nom</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                </svg>
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg">
+                            <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="name">Nom</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                                <input type="text" name="name" id="editName" 
+                                    class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
                             </div>
-                            <input type="text" name="name" id="editName" 
-                                class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
                         </div>
-                    </div>
-                    
-                    <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg mb-4">
-                        <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="birth_date">Date de naissance</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
+                        
+                        <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg">
+                            <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="birth_date">Date de naissance</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <input type="date" name="birth_date" id="editBirthDate" 
+                                    class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
                             </div>
-                            <input type="date" name="birth_date" id="editBirthDate" 
-                                class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
                         </div>
-                    </div>
-                    
-                    <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg mb-4">
-                        <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="phone">Téléphone</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                </svg>
+                        
+                        <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg">
+                            <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="phone">Téléphone</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                    </svg>
+                                </div>
+                                <input type="text" name="phone" id="editPhone" 
+                                    class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
                             </div>
-                            <input type="text" name="phone" id="editPhone" 
-                                class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
                         </div>
-                    </div>
-                    
-                    <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg mb-4">
-                        <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="address">Adresse</label>
-                        <div class="relative">
-                            <div class="absolute top-3 left-3 pointer-events-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                </svg>
+                        
+                        <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg">
+                            <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="group">Groupe</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                </div>
+                                <select name="group" id="editGroup" 
+                                    class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
+                                    <option value="Box">Box</option>
+                                    <option value="Taekwondo">Taekwondo</option>
+                                    <option value="Karaté">Karaté</option>
+                                </select>
                             </div>
-                            <textarea name="address" id="editAddress" rows="3" 
-                                class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200"></textarea>
                         </div>
-                    </div>
-                    
-                    <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg mb-4">
-                        <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="group">Groupe</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>
+                        
+                        <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg col-span-2">
+                            <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="address">Adresse</label>
+                            <div class="relative">
+                                <div class="absolute top-3 left-3 pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                </div>
+                                <textarea name="address" id="editAddress" rows="3" 
+                                    class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200"></textarea>
                             </div>
-                            <select name="group" id="editGroup" 
-                                class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
-                                <option value="Box">Box</option>
-                                <option value="Taekwondo">Taekwondo</option>
-                                <option value="Karaté">Karaté</option>
-                            </select>
                         </div>
                     </div>
                     
@@ -371,20 +395,7 @@
             }
         });
         
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function() {
-            const searchValue = this.value.toLowerCase();
-            const rows = document.querySelectorAll('tbody tr');
-
-            rows.forEach(row => {
-                const name = row.children[1].textContent.toLowerCase();
-                if (name.includes(searchValue)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
+        // La recherche est maintenant gérée côté serveur
 
         function openEditModal(id, name, birthDate, phone, address, group) {
             document.getElementById('editForm').action = `/clients/${id}`;

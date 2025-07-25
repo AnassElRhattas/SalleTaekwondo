@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\WhatsAppReminderController;
+use App\Http\Controllers\PaymentTrackingController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Carbon\Carbon;
@@ -30,6 +31,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/clients/{client}', [ClientController::class, 'update'])->name('clients.update');
     Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
     Route::get('/clients/{client}/validate-payment', [ClientController::class, 'validatePayment'])->name('clients.validate-payment');
+    
+    // Routes pour le suivi des paiements mensuels
+    Route::get('/payments/tracking', [PaymentTrackingController::class, 'index'])->name('payments.tracking');
+    Route::post('/payments/{client}/validate-month', [PaymentTrackingController::class, 'validateMonthPayment'])->name('payments.validate-month');
     
     // Routes pour les rappels WhatsApp
     Route::get('/whatsapp-reminders', [WhatsAppReminderController::class, 'index'])->name('whatsapp.index');
