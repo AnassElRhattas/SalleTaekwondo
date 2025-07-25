@@ -43,6 +43,17 @@
                                     <x-text-input id="address" name="address" type="text" class="mt-1 block w-full" :value="old('address')" />
                                     <x-input-error :messages="$errors->get('address')" class="mt-2" />
                                 </div>
+
+                                <div>
+                                    <x-input-label for="group" :value="__('Groupe (المجموعة)')" />
+                                    <select id="group" name="group" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>
+                                        <option value="" disabled {{ old('group') ? '' : 'selected' }}>{{ __('Sélectionnez un groupe') }}</option>
+                                        <option value="Box" {{ old('group') == 'Box' ? 'selected' : '' }}>Box</option>
+                                        <option value="Taekwondo" {{ old('group') == 'Taekwondo' ? 'selected' : '' }}>Taekwondo</option>
+                                        <option value="Karaté" {{ old('group') == 'Karaté' ? 'selected' : '' }}>Karaté</option>
+                                    </select>
+                                    <x-input-error :messages="$errors->get('group')" class="mt-2" />
+                                </div>
                             </div>
 
                             <div class="w-48 space-y-2">

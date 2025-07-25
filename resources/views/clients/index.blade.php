@@ -27,16 +27,28 @@
             
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <!-- En-tête avec recherche et bouton d'ajout -->
+                    <!-- En-tête avec recherche, filtre et bouton d'ajout -->
                     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                         <!-- Barre de recherche améliorée -->
-                        <div class="relative w-full md:w-1/2">
+                        <div class="relative w-full md:w-1/3">
                             <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                                 </svg>
                             </div>
                             <input type="text" id="searchInput" placeholder="Rechercher un client..." class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
+                        </div>
+                        
+                        <!-- Filtre par groupe -->
+                        <div class="relative w-full md:w-1/3">
+                            <form action="{{ route('clients.index') }}" method="GET" class="flex">
+                                <select name="group" onchange="this.form.submit()" class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
+                                    <option value="all" {{ request('group') == 'all' || !request('group') ? 'selected' : '' }}>Tous les groupes</option>
+                                    <option value="Box" {{ request('group') == 'Box' ? 'selected' : '' }}>Box</option>
+                                    <option value="Taekwondo" {{ request('group') == 'Taekwondo' ? 'selected' : '' }}>Taekwondo</option>
+                                    <option value="Karaté" {{ request('group') == 'Karaté' ? 'selected' : '' }}>Karaté</option>
+                                </select>
+                            </form>
                         </div>
                         
                         <!-- Bouton d'ajout de client -->
@@ -74,6 +86,7 @@
                                         <th scope="col" class="px-6 py-3">Date de naissance</th>
                                         <th scope="col" class="px-6 py-3">Téléphone</th>
                                         <th scope="col" class="px-6 py-3">Adresse</th>
+                                        <th scope="col" class="px-6 py-3">Groupe</th>
                                         <th scope="col" class="px-6 py-3">Date d'inscription</th>
                                         <th scope="col" class="px-6 py-3 text-center">Actions</th>
                                     </tr>
@@ -86,11 +99,20 @@
                                         <td class="px-6 py-4">{{ $client->birth_date }}</td>
                                         <td class="px-6 py-4">{{ $client->phone }}</td>
                                         <td class="px-6 py-4">{{ $client->address }}</td>
+                                        <td class="px-6 py-4">
+                                            @if($client->group)
+                                                <span class="px-2 py-1 text-xs font-semibold rounded-full {{ $client->group == 'Box' ? 'bg-blue-100 text-blue-800' : ($client->group == 'Taekwondo' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800') }}">
+                                                    {{ $client->group }}
+                                                </span>
+                                            @else
+                                                <span class="text-gray-400">-</span>
+                                            @endif
+                                        </td>
                                         <td class="px-6 py-4">{{ $client->created_at }}</td>
                                         <td class="px-6 py-4">
                                             <div class="flex items-center justify-center space-x-3">
                                                 <!-- Bouton View avec icône -->
-                                                <button onclick="viewDetails({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}', '{{ $client->created_at }}', '{{ $client->payer_abon }}', '{{ $client->profile_picture ?? "/default-avatar.jpg" }}')" 
+                                                <button onclick="viewDetails({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}', '{{ $client->created_at }}', '{{ $client->payer_abon }}', '{{ $client->profile_picture ?? "/default-avatar.jpg" }}', '{{ $client->group }}')" 
                                                     class="p-1.5 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors duration-200" title="Voir les détails">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -99,7 +121,7 @@
                                                 </button>
                                                 
                                                 <!-- Bouton Edit avec icône -->
-                                                <button onclick="openEditModal({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}')" 
+                                                <button onclick="openEditModal({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}', '{{ $client->group }}')" 
                                                     class="p-1.5 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors duration-200" title="Modifier">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -195,13 +217,17 @@
                         <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Date d'inscription</h4>
                         <p id="detailRegistrationDate" class="text-lg text-gray-900 dark:text-white font-medium"></p>
                     </div>
+                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Groupe</h4>
+                        <p id="detailGroup" class="text-lg text-gray-900 dark:text-white font-medium"></p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                        <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Dernier paiement</h4>
+                        <p id="detailLastPayer" class="text-lg text-gray-900 dark:text-white font-medium"></p>
+                    </div>
                     <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg col-span-1 md:col-span-2">
                         <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Adresse</h4>
                         <p id="detailAddress" class="text-lg text-gray-900 dark:text-white font-medium"></p>
-                    </div>
-                    <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg col-span-1 md:col-span-2">
-                        <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Dernier paiement</h4>
-                        <p id="detailLastPayer" class="text-lg text-gray-900 dark:text-white font-medium"></p>
                     </div>
                 </div>
                 
@@ -293,6 +319,23 @@
                         </div>
                     </div>
                     
+                    <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg mb-4">
+                        <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="group">Groupe</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                            </div>
+                            <select name="group" id="editGroup" 
+                                class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
+                                <option value="Box">Box</option>
+                                <option value="Taekwondo">Taekwondo</option>
+                                <option value="Karaté">Karaté</option>
+                            </select>
+                        </div>
+                    </div>
+                    
                     <div class="flex items-center justify-end space-x-4 mt-8">
                         <button type="button" onclick="closeEditModal()" 
                             class="flex items-center px-6 py-3 rounded-lg bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-700 transition duration-200">
@@ -343,12 +386,22 @@
             });
         });
 
-        function openEditModal(id, name, birthDate, phone, address) {
+        function openEditModal(id, name, birthDate, phone, address, group) {
             document.getElementById('editForm').action = `/clients/${id}`;
             document.getElementById('editName').value = name;
             document.getElementById('editBirthDate').value = birthDate;
             document.getElementById('editPhone').value = phone;
             document.getElementById('editAddress').value = address;
+            
+            // Sélectionner le groupe
+            const groupSelect = document.getElementById('editGroup');
+            for (let i = 0; i < groupSelect.options.length; i++) {
+                if (groupSelect.options[i].value === group) {
+                    groupSelect.selectedIndex = i;
+                    break;
+                }
+            }
+            
             document.getElementById('editModal').classList.remove('hidden');
         }
 
@@ -356,13 +409,14 @@
             document.getElementById('editModal').classList.add('hidden');
         }
 
-        function viewDetails(id, name, birthDate, phone, address, registrationDate, lastPayer, profilePicture) {
+        function viewDetails(id, name, birthDate, phone, address, registrationDate, lastPayer, profilePicture, group) {
             document.getElementById('detailName').textContent = name;
             document.getElementById('detailBirthDate').textContent = birthDate;
             document.getElementById('detailPhone').textContent = phone;
             document.getElementById('detailAddress').textContent = address;
             document.getElementById('detailRegistrationDate').textContent = registrationDate;
             document.getElementById('detailLastPayer').textContent = lastPayer;
+            document.getElementById('detailGroup').textContent = group || '-';
             document.getElementById('detailProfilePic').src = `/storage/${profilePicture}`;
             document.getElementById('detailsModal').classList.remove('hidden');
 

@@ -10,9 +10,16 @@ use Carbon\Carbon;
 
 class ClientController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $clients = Client::orderBy('created_at', 'desc')->paginate(10);
+        $query = Client::orderBy('created_at', 'desc');
+        
+        // Filtrer par groupe si spécifié
+        if ($request->has('group') && $request->group != 'all') {
+            $query->where('group', $request->group);
+        }
+        
+        $clients = $query->paginate(10);
         return view('clients.index', compact('clients'));
     }
 
@@ -28,6 +35,7 @@ class ClientController extends Controller
             'birth_date' => 'required|date',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:1000',
+            'group' => 'required|string|in:Box,Taekwondo,Karaté',
             'profile_picture' => 'nullable|image|max:2048',
             'Birth_contract' => 'nullable|image|max:2048'
         ]);
@@ -59,6 +67,7 @@ class ClientController extends Controller
             'birth_date' => 'required|date',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:1000',
+            'group' => 'required|string|in:Box,Taekwondo,Karaté',
             'profile_picture' => 'nullable|image|max:2048'
         ]);
 
