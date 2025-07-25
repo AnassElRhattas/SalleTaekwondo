@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\WhatsAppReminderController;
 use Illuminate\Support\Facades\Route;
 use Carbon\Carbon;
 use App\Models\Client;
@@ -47,6 +48,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/clients/{client}', [ClientController::class, 'update'])->name('clients.update');
     Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
     Route::get('/clients/{client}/validate-payment', [ClientController::class, 'validatePayment'])->name('clients.validate-payment');
+    
+    // Routes pour les rappels WhatsApp
+    Route::get('/whatsapp-reminders', [WhatsAppReminderController::class, 'index'])->name('whatsapp.index');
+    Route::post('/whatsapp-reminders/generate', [WhatsAppReminderController::class, 'generateAndDownload'])->name('whatsapp.generate');
+    Route::get('/whatsapp-reminders/download', [WhatsAppReminderController::class, 'generateAndDownload'])->name('whatsapp.download');
 });
 
 require __DIR__.'/auth.php';

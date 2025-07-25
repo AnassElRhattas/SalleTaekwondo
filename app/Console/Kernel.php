@@ -16,6 +16,11 @@ class Kernel extends ConsoleKernel
                  ->daily()
                  ->at('09:00')
                  ->appendOutputTo(storage_path('logs/reminders.log'));
+                 
+        $schedule->command('whatsapp:generate-csv')
+                 ->daily()
+                 ->at('08:00')
+                 ->appendOutputTo(storage_path('logs/whatsapp_csv.log'));
     }
 
     /**
