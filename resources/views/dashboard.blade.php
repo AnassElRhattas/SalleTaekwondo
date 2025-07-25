@@ -7,11 +7,72 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <!-- Total Clients Card -->
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+            <!-- Statistiques principales -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <!-- Total Clients Card -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{{ __('Total des Clients') }}</h3>
+                        <p class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ $totalClients }}</p>
+                    </div>
+                </div>
+                
+                <!-- Abonnements actifs -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{{ __('Abonnements actifs') }}</h3>
+                        <p class="text-3xl font-bold text-green-600 dark:text-green-400">{{ $activeCount }}</p>
+                    </div>
+                </div>
+                
+                <!-- Abonnements expirants -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{{ __('Expirant bientôt') }}</h3>
+                        <p class="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{{ $expiringCount }}</p>
+                    </div>
+                </div>
+                
+                <!-- Abonnements expirés -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{{ __('Abonnements expirés') }}</h3>
+                        <p class="text-3xl font-bold text-red-600 dark:text-red-400">{{ $expiredCount }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Statistiques supplémentaires -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <!-- Taux de renouvellement -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{{ __('Taux de renouvellement') }}</h3>
+                        <p class="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{{ $renewalRate }}%</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Pourcentage de clients qui renouvellent leur abonnement</p>
+                    </div>
+                </div>
+                
+                <!-- Âge moyen -->
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">{{ __('Âge moyen des clients') }}</h3>
+                        @if ($averageAge)
+                            <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">{{ $averageAge }} ans</p>
+                        @else
+                            <p class="text-xl text-gray-500 dark:text-gray-400">Données insuffisantes</p>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Statistiques mensuelles -->
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg mb-6">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">{{ __('Total des Clients') }}</h3>
-                    <p class="text-3xl font-bold text-blue-600 dark:text-blue-400">{{ $totalClients }}</p>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">{{ __('Statistiques mensuelles') }}</h3>
+                    <div class="w-full" style="height: 300px;">
+                        <canvas id="monthlyStatsChart"></canvas>
+                    </div>
                 </div>
             </div>
 
@@ -62,4 +123,52 @@
             </div>
         </div>
     </div>
+    <!-- Scripts pour les graphiques -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Données pour le graphique mensuel
+            const monthlyData = @json($monthlyStats);
+            const months = Object.values(monthlyData).map(item => item.month_name);
+            const newClients = Object.values(monthlyData).map(item => item.new_clients);
+            const renewals = Object.values(monthlyData).map(item => item.renewals);
+            
+            // Configuration du graphique mensuel
+            const ctx = document.getElementById('monthlyStatsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: 'Nouveaux clients',
+                            data: newClients,
+                            backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                            borderColor: 'rgb(59, 130, 246)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Renouvellements',
+                            data: renewals,
+                            backgroundColor: 'rgba(16, 185, 129, 0.5)',
+                            borderColor: 'rgb(16, 185, 129)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </x-app-layout>

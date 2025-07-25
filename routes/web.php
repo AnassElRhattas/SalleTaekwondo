@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\WhatsAppReminderController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Carbon\Carbon;
 use App\Models\Client;
@@ -11,26 +12,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    $totalClients = Client::count();
-    $clients = Client::all();
-    $expiringClients = [];
-
-    foreach ($clients as $client) {
-        $lastPaymentDate = Carbon::parse($client->payer_abon)->startOfDay();
-        $nextPaymentDate = $lastPaymentDate->copy()->addMonth()->startOfDay();
-        $today = Carbon::now()->startOfDay();
-
-        $daysRemaining = $today->diffInDays($nextPaymentDate, false); // Jours restants sans tenir compte des heures
-
-        if ($daysRemaining <= 3) {
-            $client->days_remaining = $daysRemaining;
-            $expiringClients[] = $client;
-        }
-    }
-
-    return view('dashboard', compact('totalClients', 'expiringClients'));
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 
 Route::middleware('auth')->group(function () {
