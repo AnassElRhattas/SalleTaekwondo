@@ -58,11 +58,11 @@ class GenerateWhatsAppCsv extends Command
             if ($daysUntilExpiration < 0) {
                 // Subscription has already expired
                 $phrase = "انتهت صلاحية اشتراكك منذ فترة";
-                $days = abs($daysUntilExpiration);
+                $days = $this->formatDaysInArabic(abs($daysUntilExpiration));
             } else {
                 // Subscription will expire soon
                 $phrase = "تنتهي صلاحية اشتراكك في";
-                $days = $daysUntilExpiration;
+                $days = $this->formatDaysInArabic($daysUntilExpiration);
             }
             
             // Add to CSV content
@@ -87,6 +87,15 @@ class GenerateWhatsAppCsv extends Command
     /**
      * Format phone number to international format
      */
+    protected function formatDaysInArabic(int $days): string
+    {
+        return match($days) {
+            1 => 'يوم',
+            2 => 'يومان',
+            default => $days . ' أيام'
+        };
+    }
+
     protected function formatPhoneNumber(string $phone): string
     {
         // Remove any non-digit characters
