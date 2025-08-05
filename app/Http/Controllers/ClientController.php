@@ -46,7 +46,9 @@ class ClientController extends Controller
             'address' => 'nullable|string|max:1000',
             'group' => 'required|string|in:Box,Taekwondo,Karaté',
             'profile_picture' => 'nullable|image|max:2048',
-            'Birth_contract' => 'nullable|image|max:2048'
+            'Birth_contract' => 'nullable|image|max:2048',
+            'weight' => 'nullable|numeric|between:0,999.99',
+            'height' => 'nullable|numeric|between:0,999.99'
         ]);
 
         if ($request->hasFile('profile_picture')) {
@@ -77,7 +79,9 @@ class ClientController extends Controller
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:1000',
             'group' => 'required|string|in:Box,Taekwondo,Karaté',
-            'profile_picture' => 'nullable|image|max:2048'
+            'profile_picture' => 'nullable|image|max:2048',
+            'weight' => 'nullable|numeric|between:0,999.99',
+            'height' => 'nullable|numeric|between:0,999.99'
         ]);
 
         if ($request->hasFile('profile_picture')) {

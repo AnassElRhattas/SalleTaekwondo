@@ -129,7 +129,7 @@
                                         <td class="px-6 py-4">
                                             <div class="flex items-center justify-center space-x-3">
                                                 <!-- Bouton View avec icône -->
-                                                <button onclick="viewDetails({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}', '{{ $client->created_at }}', '{{ $client->payer_abon }}', '{{ $client->profile_picture ?? "/default-avatar.jpg" }}', '{{ $client->group }}')" 
+                                                <button onclick="viewDetails({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}', '{{ $client->created_at }}', '{{ $client->payer_abon }}', '{{ $client->profile_picture ?? "/default-avatar.jpg" }}', '{{ $client->group }}', '{{ $client->weight }}', '{{ $client->height }}')" 
                                                     class="p-1.5 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors duration-200" title="Voir les détails">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -138,7 +138,7 @@
                                                 </button>
                                                 
                                                 <!-- Bouton Edit avec icône -->
-                                                <button onclick="openEditModal({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}', '{{ $client->group }}')" 
+                                                <button onclick="openEditModal({{ $client->id }}, '{{ $client->name }}', '{{ $client->birth_date }}', '{{ $client->phone }}', '{{ $client->address }}', '{{ $client->group }}', '{{ $client->weight }}', '{{ $client->height }}')" 
                                                     class="p-1.5 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors duration-200" title="Modifier">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -249,6 +249,14 @@
                                 <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Dernier paiement</h4>
                                 <p id="detailLastPayer" class="text-lg text-gray-900 dark:text-white font-medium"></p>
                             </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Poids</h4>
+                                <p id="detailWeight" class="text-lg text-gray-900 dark:text-white font-medium"></p>
+                            </div>
+                            <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Taille</h4>
+                                <p id="detailHeight" class="text-lg text-gray-900 dark:text-white font-medium"></p>
+                            </div>
                             <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg col-span-2">
                                 <h4 class="text-sm font-semibold text-gray-600 dark:text-gray-400">Adresse</h4>
                                 <p id="detailAddress" class="text-lg text-gray-900 dark:text-white font-medium"></p>
@@ -349,6 +357,32 @@
                             </div>
                         </div>
                         
+                        <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg">
+                            <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="weight">Poids (kg)</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                                    </svg>
+                                </div>
+                                <input type="number" step="0.01" name="weight" id="editWeight" 
+                                    class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg">
+                            <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="height">Taille (cm)</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 3a4 4 0 100 8 4 4 0 000-8z" />
+                                    </svg>
+                                </div>
+                                <input type="number" step="0.01" name="height" id="editHeight" 
+                                    class="w-full pl-10 px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition duration-200">
+                            </div>
+                        </div>
+
                         <div class="bg-gray-50 dark:bg-gray-700 p-5 rounded-lg col-span-2">
                             <label class="block text-gray-700 dark:text-gray-200 text-sm font-semibold mb-2" for="address">Adresse</label>
                             <div class="relative">
@@ -401,12 +435,14 @@
         
         // La recherche est maintenant gérée côté serveur
 
-        function openEditModal(id, name, birthDate, phone, address, group) {
+        function openEditModal(id, name, birthDate, phone, address, group, weight, height) {
             document.getElementById('editForm').action = `/clients/${id}`;
             document.getElementById('editName').value = name;
             document.getElementById('editBirthDate').value = birthDate;
             document.getElementById('editPhone').value = phone;
             document.getElementById('editAddress').value = address;
+            document.getElementById('editWeight').value = weight || '';
+            document.getElementById('editHeight').value = height || '';
             
             // Sélectionner le groupe
             const groupSelect = document.getElementById('editGroup');
@@ -424,7 +460,7 @@
             document.getElementById('editModal').classList.add('hidden');
         }
 
-        function viewDetails(id, name, birthDate, phone, address, registrationDate, lastPayer, profilePicture, group) {
+        function viewDetails(id, name, birthDate, phone, address, registrationDate, lastPayer, profilePicture, group, weight, height) {
             document.getElementById('detailName').textContent = name;
             document.getElementById('detailBirthDate').textContent = birthDate;
             
@@ -452,6 +488,8 @@
             document.getElementById('detailRegistrationDate').textContent = registrationDate;
             document.getElementById('detailLastPayer').textContent = lastPayer;
             document.getElementById('detailGroup').textContent = group || '-';
+            document.getElementById('detailWeight').textContent = weight ? weight + ' kg' : '-';
+            document.getElementById('detailHeight').textContent = height ? height + ' cm' : '-';
             document.getElementById('detailProfilePic').src = `/storage/${profilePicture}`;
             document.getElementById('detailsModal').classList.remove('hidden');
 

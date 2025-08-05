@@ -20,16 +20,17 @@ class PaymentTrackingController extends Controller
         
         $clients = $query->get();
         
-        // Générer les mois pour l'affichage (12 mois à partir du mois actuel)
-        $currentMonth = Carbon::now()->startOfMonth();
+        // Générer les mois de septembre 2025 à septembre 2026
+        $startMonth = Carbon::create(2025, 9, 1)->startOfMonth();
+        $endMonth = Carbon::create(2026, 9, 1)->startOfMonth();
         $months = [];
         
-        for ($i = 0; $i < 12; $i++) {
-            $monthDate = $currentMonth->copy()->subMonths(6)->addMonths($i);
+        while ($startMonth->lte($endMonth)) {
             $months[] = [
-                'date' => $monthDate->copy(),
-                'name' => $monthDate->translatedFormat('F Y')
+                'date' => $startMonth->copy(),
+                'name' => $startMonth->translatedFormat('m - F Y')
             ];
+            $startMonth->addMonth();
         }
         
         // Préparer les données de paiement pour chaque client

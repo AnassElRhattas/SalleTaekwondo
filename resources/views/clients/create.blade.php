@@ -32,7 +32,7 @@
                     @endif
                     
                     <!-- Progress Indicator -->
-                    <div class="mb-6">
+                    <!-- <div class="mb-6">
                         <div class="flex justify-between mb-1">
                             <span class="text-sm font-medium text-gray-700 dark:text-gray-300">Progression du formulaire</span>
                             <span id="form-progress-percentage" class="text-sm font-medium text-gray-700 dark:text-gray-300">0%</span>
@@ -40,13 +40,16 @@
                         <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                             <div id="form-progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <form method="POST" action="{{ route('clients.store') }}" class="space-y-6" enctype="multipart/form-data">
                         @csrf
 
-                        <div class="flex gap-6">
-                            <div class="flex-1 space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Section Informations Personnelles -->
+                            <div class="space-y-6">
+                                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('Informations Personnelles') }}</h3>
+                                
                                 <div>
                                     <x-input-label for="name" :value="__('Name (الاسم الكامل)')" />
                                     <div class="relative">
@@ -100,7 +103,42 @@
                                     </div>
                                     <x-input-error :messages="$errors->get('address')" class="mt-2" />
                                 </div>
+                                <div class="w-full space-y-2">
+                                    <x-input-label for="profile_picture" :value="__('Profile Picture (الصورة الشخصية)')" class="text-sm font-medium" />
+                                    <div class="flex items-center justify-center w-full">
+                                        <label for="profile_picture" class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 transition-all duration-300 ease-in-out relative overflow-hidden">
+                                            <div id="profile_picture_placeholder" class="flex flex-col items-center justify-center pt-5 pb-6 absolute inset-0 transition-opacity duration-300">
+                                                <svg class="w-8 h-8 mb-3 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                                <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Photo de profil</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">Cliquez pour télécharger</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG ou GIF</p>
+                                            </div>
+                                            <div id="profile_picture_preview" class="hidden w-full h-full">
+                                                <!-- Preview will be inserted here by JS -->
+                                            </div>
+                                            <input id="profile_picture" name="profile_picture" type="file" accept="image/*" class="hidden" />
+                                        </label>
+                                    </div>
+                                    <div class="flex justify-center mt-2">
+                                        <button type="button" id="remove_profile_picture" class="text-xs text-red-600 hover:text-red-800 hidden">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                            Supprimer
+                                        </button>
+                                    </div>
+                                    <x-input-error :messages="$errors->get('profile_picture')" class="mt-2" />
+                                </div>
+                            </div>
 
+                            <!-- Section Informations Sportives -->
+                            <div class="space-y-6">
+                                <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ __('Informations Sportives') }}</h3>
+
+                                
+                                
                                 <div>
                                     <x-input-label for="group" :value="__('Groupe (المجموعة)')" />
                                     <div class="relative">
@@ -118,66 +156,68 @@
                                     </div>
                                     <x-input-error :messages="$errors->get('group')" class="mt-2" />
                                 </div>
-                            </div>
 
-                            <div class="w-48 space-y-2">
-                                <x-input-label for="profile_picture" :value="__('Profile Picture (الصورة الشخصية)')" class="text-sm font-medium" />
-                                <div class="flex items-center justify-center w-full">
-                                    <label for="profile_picture" class="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 transition-all duration-300 ease-in-out relative overflow-hidden">
-                                        <div id="profile_picture_placeholder" class="flex flex-col items-center justify-center pt-5 pb-6 absolute inset-0 transition-opacity duration-300">
-                                            <svg class="w-8 h-8 mb-3 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <x-input-label for="weight" :value="__('Weight (الوزن) en kg')" />
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                                                </svg>
+                                            </div>
+                                            <x-text-input id="weight" name="weight" type="number" step="0.01" class="mt-1 block w-full pl-10" :value="old('weight')" placeholder="Poids en kg" />
+                                        </div>
+                                        <x-input-error :messages="$errors->get('weight')" class="mt-2" />
+                                    </div>
+
+                                    <div>
+                                        <x-input-label for="height" :value="__('Height (الطول) en cm')" />
+                                        <div class="relative">
+                                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 3a4 4 0 100 8 4 4 0 000-8z" />
+                                                </svg>
+                                            </div>
+                                            <x-text-input id="height" name="height" type="number" step="0.01" class="mt-1 block w-full pl-10" :value="old('height')" placeholder="Taille en cm" />
+                                        </div>
+                                        <x-input-error :messages="$errors->get('height')" class="mt-2" />
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <x-input-label for="Birth_contract" :value="__('Birth contract (عقد الازدياد)')" class="text-lg font-medium" />
+                                    <div class="flex items-center justify-center w-full">
+                                        <label for="Birth_contract" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 transition-all duration-300 ease-in-out relative overflow-hidden">
+                                            <div id="Birth_contract_placeholder" class="flex flex-col items-center justify-center pt-5 pb-6 absolute inset-0 transition-opacity duration-300">
+                                                <svg class="w-10 h-10 mb-3 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                                </svg>
+                                                <p class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Acte de naissance</p>
+                                                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Cliquez pour télécharger</span> ou glissez-déposez</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG ou GIF</p>
+                                            </div>
+                                            <div id="Birth_contract_preview" class="hidden w-full h-full">
+                                                <!-- Preview will be inserted here by JS -->
+                                            </div>
+                                            <input id="Birth_contract" name="Birth_contract" type="file" accept="image/*" class="hidden" />
+                                        </label>
+                                    </div>
+                                    <div class="flex justify-center mt-2">
+                                        <button type="button" id="remove_Birth_contract" class="text-xs text-red-600 hover:text-red-800 hidden">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
-                                            <p class="text-sm font-medium text-gray-700 dark:text-gray-300">Photo de profil</p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">Cliquez pour télécharger</p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG ou GIF</p>
-                                        </div>
-                                        <div id="profile_picture_preview" class="hidden w-full h-full">
-                                            <!-- Preview will be inserted here by JS -->
-                                        </div>
-                                        <input id="profile_picture" name="profile_picture" type="file" accept="image/*" class="hidden" />
-                                    </label>
+                                            Supprimer
+                                        </button>
+                                    </div>
+                                    <x-input-error :messages="$errors->get('Birth_contract')" class="mt-2" />
                                 </div>
-                                <div class="flex justify-center mt-2">
-                                    <button type="button" id="remove_profile_picture" class="text-xs text-red-600 hover:text-red-800 hidden">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                        Supprimer
-                                    </button>
-                                </div>
-                                <x-input-error :messages="$errors->get('profile_picture')" class="mt-2" />
                             </div>
+
+
                         </div>
 
-                        <div class="space-y-2">
-                            <x-input-label for="Birth_contract" :value="__('Birth contract (عقد الازدياد)')" class="text-lg font-medium" />
-                            <div class="flex items-center justify-center w-full">
-                                <label for="Birth_contract" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 transition-all duration-300 ease-in-out relative overflow-hidden">
-                                    <div id="Birth_contract_placeholder" class="flex flex-col items-center justify-center pt-5 pb-6 absolute inset-0 transition-opacity duration-300">
-                                        <svg class="w-10 h-10 mb-3 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                        </svg>
-                                        <p class="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Acte de naissance</p>
-                                        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Cliquez pour télécharger</span> ou glissez-déposez</p>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">PNG, JPG ou GIF</p>
-                                    </div>
-                                    <div id="Birth_contract_preview" class="hidden w-full h-full">
-                                        <!-- Preview will be inserted here by JS -->
-                                    </div>
-                                    <input id="Birth_contract" name="Birth_contract" type="file" accept="image/*" class="hidden" />
-                                </label>
-                            </div>
-                            <div class="flex justify-center mt-2">
-                                <button type="button" id="remove_Birth_contract" class="text-xs text-red-600 hover:text-red-800 hidden">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                    Supprimer
-                                </button>
-                            </div>
-                            <x-input-error :messages="$errors->get('Birth_contract')" class="mt-2" />
-                        </div>
+
 
                         <div class="flex items-center justify-between gap-4">
                             <div>
