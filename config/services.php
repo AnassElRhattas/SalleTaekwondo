@@ -23,14 +23,17 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-    'green_api' => [
-        'instance_id' => env('GREEN_API_INSTANCE_ID'),
-        'token' => env('GREEN_API_TOKEN'),
-    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+
+    'whatsapp' => [
+        'base_url' => env('WHATSAPP_SERVICE_URL', 'http://localhost:3000'),
+        'timeout' => env('WHATSAPP_SERVICE_TIMEOUT', 30),
+    ],
+
 ];
