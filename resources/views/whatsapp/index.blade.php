@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Rappels WhatsApp') }}
+            {{ __('Gestion WhatsApp - Rappels d\'abonnement') }}
         </h2>
     </x-slot>
 
@@ -9,85 +9,219 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h3 class="text-lg font-medium mb-4">Génération de fichier CSV pour rappels WhatsApp</h3>
                     
-                    <div class="mb-6 bg-blue-50 p-4 rounded-lg">
-                        <p class="text-blue-700">
-                            <i class="fas fa-info-circle mr-2"></i>
-                            Ce système génère un fichier CSV contenant les informations nécessaires pour envoyer des rappels WhatsApp
-                            aux clients dont l'abonnement expire dans les 3 prochains jours ou a déjà expiré. Le fichier est formaté
-                            spécifiquement pour être utilisé avec l'extension WA Web Utils.
-                        </p>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <div class="flex items-center">
-                            <div class="bg-gray-100 rounded-lg p-4 flex-1">
-                                <p class="font-medium">Clients avec abonnements expirants aujourd'hui :</p>
-                                <p class="text-2xl font-bold mt-2">{{ $expiringCount }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <h4 class="font-medium mb-2">Fichier CSV pour aujourd'hui</h4>
-                        
-                        @if ($fileExists)
-                            <div class="flex items-center space-x-4">
-                                <span class="text-green-600">
-                                    <i class="fas fa-check-circle mr-1"></i>
-                                    Le fichier <strong>{{ $filename }}</strong> est disponible
-                                </span>
-                                <a href="{{ route('whatsapp.download') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                    <i class="fas fa-download mr-2"></i>
-                                    Télécharger
-                                </a>
-                            </div>
-                        @else
-                            <div class="text-yellow-600 mb-4">
-                                <i class="fas fa-exclamation-triangle mr-1"></i>
-                                Aucun fichier n'a encore été généré pour aujourd'hui
+                    <!-- Statut du service -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">📊 Statut du Service</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        @if($isServiceAvailable)
+                                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                        @else
+                                            <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                                        @endif
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm font-medium text-gray-900">Service WhatsApp</p>
+                                        <p class="text-sm text-gray-500">
+                                            @if($isServiceAvailable)
+                                                ✅ Disponible
+                                            @else
+                                                ❌ Non disponible
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             
-                            <form action="{{ route('whatsapp.generate') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-500 focus:bg-blue-500 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                    <i class="fas fa-file-csv mr-2"></i>
-                                    Générer et télécharger
-                                </button>
-                            </form>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        @if($isWhatsAppConnected)
+                                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                                        @else
+                                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                                        @endif
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm font-medium text-gray-900">Connexion WhatsApp</p>
+                                        <p class="text-sm text-gray-500">
+                                            @if($isWhatsAppConnected)
+                                                ✅ Connecté
+                                            @else
+                                                ⚠️ Non connecté
+                                            @endif
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        @if(!$isServiceAvailable)
+                            <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                <p class="text-red-800">
+                                    <strong>⚠️ Service non disponible :</strong> Veuillez démarrer le service WhatsApp avec la commande :
+                                    <code class="bg-red-100 px-2 py-1 rounded text-sm">cd whatsapp-service && npm start</code>
+                                </p>
+                            </div>
+                        @elseif(!$isWhatsAppConnected)
+                            <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                <p class="text-yellow-800">
+                                    <strong>📱 WhatsApp non connecté :</strong> Scannez le QR code affiché dans le terminal du service WhatsApp.
+                                </p>
+                            </div>
                         @endif
                     </div>
-                    
-                    <div class="mt-8 bg-gray-50 p-4 rounded-lg">
-                        <h4 class="font-medium mb-2">Instructions</h4>
-                        <ol class="list-decimal list-inside space-y-2">
-                            <li>Cliquez sur <strong>Générer et télécharger</strong> pour créer le fichier CSV</li>
-                            <li>Importez ce fichier dans l'extension <strong>WA Web Utils</strong> sur WhatsApp Web</li>
-                            <li>Vérifiez que les messages sont correctement formatés</li>
-                            <li>Envoyez les messages via l'extension</li>
-                        </ol>
-                    </div>
-                    
-                    <div class="mt-4 bg-yellow-50 p-4 rounded-lg">
-                        <h4 class="font-medium mb-2">Format du fichier CSV</h4>
-                        <p class="mb-2">Le fichier CSV généré contient les colonnes suivantes :</p>
-                        <ul class="list-disc list-inside space-y-1 ml-2">
-                            <li><strong>Name</strong> : Nom du client</li>
-                            <li><strong>Phone</strong> : Numéro de téléphone au format international (212...)</li>
-                            <li><strong>Name</strong> : Nom du client (répété)</li>
-                            <li><strong>PhraseExperation</strong> : Phrase d'expiration ("votre abonnement expire dans" ou "votre abonnement a expiré il y a")</li>
-                            <li><strong>Days</strong> : Nombre de jours avant/après expiration</li>
-                        </ul>
-                    </div>
-                    
-                    @if (session('error'))
-                        <div class="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                            <span class="block sm:inline">{{ session('error') }}</span>
+
+                    <!-- Actions -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">🚀 Actions</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            
+                            <!-- Bouton Test -->
+                            <button id="testBtn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Tester les rappels
+                            </button>
+                            
+                            <!-- Bouton Envoyer -->
+                            <button id="sendBtn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center" 
+                                    @if(!$isServiceAvailable || !$isWhatsAppConnected) disabled @endif>
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                </svg>
+                                Envoyer les rappels
+                            </button>
+                            
+                            <!-- Bouton Actualiser -->
+                            <button id="refreshBtn" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                                Actualiser le statut
+                            </button>
                         </div>
-                    @endif
+                    </div>
+
+                    <!-- Zone de résultats -->
+                    <div id="results" class="hidden">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">📋 Résultats</h3>
+                        <div id="resultContent" class="bg-gray-50 p-4 rounded-lg border">
+                            <!-- Le contenu sera injecté ici -->
+                        </div>
+                    </div>
+
+                    <!-- Zone de chargement -->
+                    <div id="loading" class="hidden text-center py-8">
+                        <div class="inline-flex items-center px-4 py-2 font-semibold leading-6 text-sm shadow rounded-md text-white bg-indigo-500 hover:bg-indigo-400 transition ease-in-out duration-150 cursor-not-allowed">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Traitement en cours...
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const testBtn = document.getElementById('testBtn');
+            const sendBtn = document.getElementById('sendBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const resultContent = document.getElementById('resultContent');
+
+            // Fonction pour afficher le chargement
+            function showLoading() {
+                loading.classList.remove('hidden');
+                results.classList.add('hidden');
+                testBtn.disabled = true;
+                sendBtn.disabled = true;
+                refreshBtn.disabled = true;
+            }
+
+            // Fonction pour masquer le chargement
+            function hideLoading() {
+                loading.classList.add('hidden');
+                testBtn.disabled = false;
+                sendBtn.disabled = false;
+                refreshBtn.disabled = false;
+            }
+
+            // Fonction pour afficher les résultats
+            function showResults(data, isSuccess = true) {
+                hideLoading();
+                results.classList.remove('hidden');
+                
+                const bgColor = isSuccess ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200';
+                const textColor = isSuccess ? 'text-green-800' : 'text-red-800';
+                const icon = isSuccess ? '✅' : '❌';
+                
+                resultContent.className = `p-4 rounded-lg border ${bgColor}`;
+                resultContent.innerHTML = `
+                    <div class="${textColor}">
+                        <p class="font-medium">${icon} ${data.message}</p>
+                        ${data.output ? `<pre class="mt-2 text-sm whitespace-pre-wrap">${data.output}</pre>` : ''}
+                    </div>
+                `;
+            }
+
+            // Test des rappels
+            testBtn.addEventListener('click', function() {
+                showLoading();
+                
+                fetch('/whatsapp/test-reminders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    showResults(data, data.success);
+                })
+                .catch(error => {
+                    hideLoading();
+                    showResults({message: 'Erreur de connexion : ' + error.message}, false);
+                });
+            });
+
+            // Envoi des rappels
+            sendBtn.addEventListener('click', function() {
+                if (confirm('Êtes-vous sûr de vouloir envoyer les rappels WhatsApp à tous les clients concernés ?')) {
+                    showLoading();
+                    
+                    fetch('/whatsapp/send-reminders', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        showResults(data, data.success);
+                    })
+                    .catch(error => {
+                        hideLoading();
+                        showResults({message: 'Erreur de connexion : ' + error.message}, false);
+                    });
+                }
+            });
+
+            // Actualiser le statut
+            refreshBtn.addEventListener('click', function() {
+                location.reload();
+            });
+        });
+    </script>
 </x-app-layout>

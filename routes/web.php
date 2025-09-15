@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\WhatsAppReminderController;
+use App\Http\Controllers\WhatsAppController;
 use App\Http\Controllers\PaymentTrackingController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +41,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/whatsapp-reminders', [WhatsAppReminderController::class, 'index'])->name('whatsapp.index');
     Route::post('/whatsapp-reminders/generate', [WhatsAppReminderController::class, 'generateAndDownload'])->name('whatsapp.generate');
     Route::get('/whatsapp-reminders/download', [WhatsAppReminderController::class, 'generateAndDownload'])->name('whatsapp.download');
+    
+    // Routes pour le nouveau système WhatsApp automatisé
+    Route::get('/whatsapp', [WhatsAppController::class, 'index'])->name('whatsapp.management');
+    Route::post('/whatsapp/test-reminders', [WhatsAppController::class, 'testReminders'])->name('whatsapp.test');
+    Route::post('/whatsapp/send-reminders', [WhatsAppController::class, 'sendReminders'])->name('whatsapp.send');
+    Route::get('/whatsapp/status', [WhatsAppController::class, 'getStatus'])->name('whatsapp.status');
 });
 
 require __DIR__.'/auth.php';

@@ -125,21 +125,21 @@ class WhatsAppAutomationService
     }
     
     /**
-     * Générer le message de rappel personnalisé
+     * Générer le message de rappel personnalisé en arabe
      */
     private function generateReminderMessage(array $client): string
     {
-        $nom = $client['nom'] ?? 'Client';
+        $nom = $client['nom'] ?? 'العميل';
         $prenom = $client['prenom'] ?? '';
-        $dateExpiration = $client['date_expiration'] ?? 'bientôt';
+        $dateExpiration = $client['date_expiration'] ?? 'قريباً';
         
         $nomComplet = trim($prenom . ' ' . $nom);
         
-        return "🥋 Bonjour {$nomComplet},\n\n" .
-               "Votre abonnement au club de Taekwondo expire le {$dateExpiration}.\n\n" .
-               "Pour continuer à profiter de nos cours, pensez à renouveler votre abonnement.\n\n" .
-               "Merci de votre confiance ! 🙏\n\n" .
-               "L'équipe du Club de Taekwondo";
+        return "🥋 مرحباً {$nomComplet}،\n\n" .
+               "اشتراكك في نادي التايكوندو ينتهي في {$dateExpiration}.\n\n" .
+               "لمواصلة الاستفادة من دروسنا، يرجى تجديد اشتراكك.\n\n" .
+               "شكراً لثقتك! 🙏\n\n" .
+               "فريق نادي التايكوندو";
     }
     
     /**
