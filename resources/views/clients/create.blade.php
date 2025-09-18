@@ -103,6 +103,20 @@
                                     </div>
                                     <x-input-error :messages="$errors->get('address')" class="mt-2" />
                                 </div>
+
+                                <div>
+                                    <x-input-label for="registration_date" :value="__('Registration Date (تاريخ التسجيل)')" />
+                                    <div class="relative">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
+                                        </div>
+                                        <x-text-input id="registration_date" name="registration_date" type="date" class="mt-1 block w-full pl-10" :value="old('registration_date', date('Y-m-d'))" required />
+                                    </div>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Date d'inscription du client dans le club</p>
+                                    <x-input-error :messages="$errors->get('registration_date')" class="mt-2" />
+                                </div>
                                 <div class="w-full space-y-2">
                                     <x-input-label for="profile_picture" :value="__('Profile Picture (الصورة الشخصية)')" class="text-sm font-medium" />
                                     <div class="flex items-center justify-center w-full">

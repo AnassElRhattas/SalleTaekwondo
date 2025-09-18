@@ -69,8 +69,22 @@
                         @elseif(!$isWhatsAppConnected)
                             <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                                 <p class="text-yellow-800">
-                                    <strong>📱 WhatsApp non connecté :</strong> Scannez le QR code affiché dans le terminal du service WhatsApp.
+                                    <strong>📱 WhatsApp non connecté :</strong> Scannez le code QR ci-dessous avec votre téléphone.
                                 </p>
+                                <div id="qrcode-container" class="mt-4 flex justify-center">
+                                    <div class="p-4 bg-white border rounded-lg shadow-sm">
+                                        <img id="qrcode-image" src="" alt="QR Code WhatsApp" class="w-48 h-48 hidden">
+                                        <div id="qrcode-loading" class="w-48 h-48 flex items-center justify-center">
+                                            <svg class="animate-spin h-8 w-8 text-yellow-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        </div>
+                                        <div id="qrcode-error" class="w-48 h-48 hidden flex items-center justify-center text-red-500 text-center">
+                                            Code QR non disponible
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         @endif
                     </div>
@@ -217,6 +231,44 @@
                     });
                 }
             });
+
+            // Chargement du QR code
+            function loadQRCode() {
+                if (!document.getElementById('qrcode-container')) return;
+                
+                const qrcodeImage = document.getElementById('qrcode-image');
+                const qrcodeLoading = document.getElementById('qrcode-loading');
+                const qrcodeError = document.getElementById('qrcode-error');
+                
+                fetch('/whatsapp/qrcode')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.qrCode) {
+                            qrcodeImage.src = data.qrCode;
+                            qrcodeImage.classList.remove('hidden');
+                            qrcodeLoading.classList.add('hidden');
+                            qrcodeError.classList.add('hidden');
+                        } else {
+                            qrcodeImage.classList.add('hidden');
+                            qrcodeLoading.classList.add('hidden');
+                            qrcodeError.classList.remove('hidden');
+                        }
+                    })
+                    .catch(error => {
+                        qrcodeImage.classList.add('hidden');
+                        qrcodeLoading.classList.add('hidden');
+                        qrcodeError.classList.remove('hidden');
+                        console.error('Erreur lors du chargement du QR code:', error);
+                    });
+            }
+
+            // Charger le QR code au chargement de la page
+            if (!isWhatsAppConnected) {
+                loadQRCode();
+                
+                // Rafraîchir le QR code toutes les 30 secondes
+                setInterval(loadQRCode, 30000);
+            }
 
             // Actualiser le statut
             refreshBtn.addEventListener('click', function() {

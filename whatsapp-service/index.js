@@ -4,17 +4,21 @@ const { useMultiFileAuthState, fetchLatestBaileysVersion, DisconnectReason } = r
 const { Boom } = require('@hapi/boom');
 const P = require('pino');
 const qrcode = require('qrcode-terminal');
+const qrcodeLib = require('qrcode');
 const fs = require('fs');
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(cors());
 
 let sock = null;
 let isConnected = false;
 let qrCodeGenerated = false;
+let currentQR = null;
 
 // Fonction pour démarrer la connexion WhatsApp
 async function startWhatsApp() {
@@ -39,6 +43,14 @@ async function startWhatsApp() {
                 console.log('Scannez ce QR code avec votre téléphone WhatsApp');
                 console.log('Allez dans WhatsApp > Appareils liés > Lier un appareil');
                 qrCodeGenerated = true;
+                currentQR = qr; // Stocker le code QR actuel
+                
+                // Générer une image QR pour l'API
+                qrcodeLib.toDataURL(qr, (err, url) => {
+                    if (!err) {
+                        currentQR = url;
+                    }
+                });
             }
             
             if (connection === 'close') {
@@ -93,8 +105,23 @@ async function sendMessage(number, message) {
 app.get('/status', (req, res) => {
     res.json({
         connected: isConnected,
-        qrRequired: !isConnected && !qrCodeGenerated
+        qrRequired: !isConnected && !qrCodeGenerated,
+        qrCode: !isConnected ? currentQR : null
     });
+});
+
+app.get('/qrcode', (req, res) => {
+    if (currentQR && !isConnected) {
+        res.json({
+            success: true,
+            qrCode: currentQR
+        });
+    } else {
+        res.json({
+            success: false,
+            message: isConnected ? 'Déjà connecté à WhatsApp' : 'Code QR non disponible'
+        });
+    }
 });
 
 app.post('/send-message', async (req, res) => {

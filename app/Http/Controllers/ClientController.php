@@ -48,7 +48,8 @@ class ClientController extends Controller
             'profile_picture' => 'nullable|image|max:2048',
             'Birth_contract' => 'nullable|image|max:2048',
             'weight' => 'nullable|numeric|between:0,999.99',
-            'height' => 'nullable|numeric|between:0,999.99'
+            'height' => 'nullable|numeric|between:0,999.99',
+            'registration_date' => 'required|date'
         ]);
 
         if ($request->hasFile('profile_picture')) {
@@ -60,7 +61,10 @@ class ClientController extends Controller
 
         $validated['payer_abon'] = now();
 
-        Client::create($validated);
+        // Créer le client avec la date d'inscription personnalisée
+        $client = new Client($validated);
+        $client->created_at = Carbon::parse($validated['registration_date']);
+        $client->save();
 
         return redirect()->route('clients.index')
             ->with('success', 'Client added successfully!');
@@ -100,6 +104,31 @@ class ClientController extends Controller
 
         return redirect()->route('clients.index')
             ->with('success', 'Client deleted successfully!');
+    }
+
+    public function trash(): View
+    {
+        $trashedClients = Client::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(10);
+        
+        return view('clients.trash', compact('trashedClients'));
+    }
+
+    public function restore($id): RedirectResponse
+    {
+        $client = Client::onlyTrashed()->findOrFail($id);
+        $client->restore();
+
+        return redirect()->route('clients.trash')
+            ->with('success', 'Client restored successfully!');
+    }
+
+    public function forceDelete($id): RedirectResponse
+    {
+        $client = Client::onlyTrashed()->findOrFail($id);
+        $client->forceDelete();
+
+        return redirect()->route('clients.trash')
+            ->with('success', 'Client permanently deleted!');
     }
 
     public function validatePayment(Client $client): RedirectResponse

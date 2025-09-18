@@ -83,6 +83,26 @@ class WhatsAppController extends Controller
     }
 
     /**
+     * Récupérer le code QR pour la connexion WhatsApp
+     */
+    public function getQRCode()
+    {
+        $qrCode = $this->whatsappService->getQRCode();
+        
+        if ($qrCode) {
+            return response()->json([
+                'success' => true,
+                'qrCode' => $qrCode
+            ]);
+        }
+        
+        return response()->json([
+            'success' => false,
+            'message' => 'Code QR non disponible'
+        ], 404);
+    }
+    
+    /**
      * Tester les rappels (mode dry-run)
      */
     public function testReminders(Request $request)

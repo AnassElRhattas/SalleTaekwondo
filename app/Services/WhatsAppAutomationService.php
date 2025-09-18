@@ -169,13 +169,34 @@ class WhatsAppAutomationService
     public function isServiceAvailable(): bool
     {
         try {
-            $response = Http::timeout($this->timeout)
-                ->get($this->baseUrl . '/status');
-            
-            return $response->successful();
+            Http::timeout(5)->get($this->baseUrl . '/status');
+            return true;
         } catch (Exception $e) {
             Log::error('Erreur lors de la vérification du service WhatsApp: ' . $e->getMessage());
             return false;
+        }
+    }
+    
+    /**
+     * Récupérer le code QR pour la connexion WhatsApp
+     */
+    public function getQRCode(): ?string
+    {
+        try {
+            $response = Http::timeout($this->timeout)
+                ->get($this->baseUrl . '/qrcode');
+            
+            if ($response->successful()) {
+                $data = $response->json();
+                if ($data['success'] && isset($data['qrCode'])) {
+                    return $data['qrCode'];
+                }
+            }
+            
+            return null;
+        } catch (Exception $e) {
+            Log::error('WhatsApp QR Code Error: ' . $e->getMessage());
+            return null;
         }
     }
     

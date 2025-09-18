@@ -31,6 +31,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/clients/{client}/edit', [ClientController::class, 'edit'])->name('clients.edit');
     Route::patch('/clients/{client}', [ClientController::class, 'update'])->name('clients.update');
     Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
+    
+    // Routes pour la corbeille
+    Route::get('/clients/trash', [ClientController::class, 'trash'])->name('clients.trash');
+    Route::patch('/clients/{id}/restore', [ClientController::class, 'restore'])->name('clients.restore');
+    Route::delete('/clients/{id}/force-delete', [ClientController::class, 'forceDelete'])->name('clients.force-delete');
+    
     Route::get('/clients/{client}/validate-payment', [ClientController::class, 'validatePayment'])->name('clients.validate-payment');
     
     // Routes pour le suivi des paiements mensuels
@@ -47,6 +53,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/whatsapp/test-reminders', [WhatsAppController::class, 'testReminders'])->name('whatsapp.test');
     Route::post('/whatsapp/send-reminders', [WhatsAppController::class, 'sendReminders'])->name('whatsapp.send');
     Route::get('/whatsapp/status', [WhatsAppController::class, 'getStatus'])->name('whatsapp.status');
+    Route::get('/whatsapp/qrcode', [WhatsAppController::class, 'getQRCode'])->name('whatsapp.qrcode');
 });
 
 require __DIR__.'/auth.php';

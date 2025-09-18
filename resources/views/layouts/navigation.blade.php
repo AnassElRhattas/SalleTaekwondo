@@ -24,6 +24,9 @@
                     <x-nav-link :href="route('payments.tracking')" :active="request()->routeIs('payments.tracking')">
                         {{ __('Suivi Paiements') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('whatsapp.management')" :active="request()->routeIs('whatsapp.management')">
+                        {{ __('Rappels WhatsApp') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('whatsapp.index')" :active="request()->routeIs('whatsapp.index')">
                         {{ __('Rappels WhatsApp') }}
                     </x-nav-link>
