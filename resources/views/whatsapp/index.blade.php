@@ -144,6 +144,49 @@
         </div>
     </div>
 
+    <!-- Send Reminders Confirmation Modal -->
+    <div id="sendRemindersModal" class="fixed inset-0 bg-black bg-opacity-40 hidden overflow-y-auto h-full w-full backdrop-blur-sm transition-all duration-300 z-50">
+        <div class="relative top-20 mx-auto p-8 border-0 w-[500px] shadow-2xl rounded-xl bg-white dark:bg-gray-800 transform transition-all duration-300">
+            <div class="mt-2">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-2xl font-bold text-blue-600 dark:text-blue-400 text-center flex-grow">Confirmer l'envoi</h3>
+                    <button type="button" onclick="closeSendRemindersModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="text-center mb-8">
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900 mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                    </div>
+                    <p class="text-lg text-gray-700 dark:text-gray-200 mb-2">Êtes-vous sûr de vouloir envoyer les rappels WhatsApp ?</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Cette action enverra des messages à tous les clients concernés.</p>
+                </div>
+                
+                <div class="flex items-center justify-center space-x-4 mt-8">
+                    <button type="button" onclick="closeSendRemindersModal()" 
+                        class="flex items-center px-6 py-3 rounded-lg bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium hover:bg-gray-300 dark:hover:bg-gray-500 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-700 transition duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Annuler
+                    </button>
+                    <button type="button" onclick="confirmSendReminders()" 
+                        class="flex items-center px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition duration-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        Envoyer les rappels
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const testBtn = document.getElementById('testBtn');
@@ -211,25 +254,7 @@
 
             // Envoi des rappels
             sendBtn.addEventListener('click', function() {
-                if (confirm('Êtes-vous sûr de vouloir envoyer les rappels WhatsApp à tous les clients concernés ?')) {
-                    showLoading();
-                    
-                    fetch('/whatsapp/send-reminders', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        showResults(data, data.success);
-                    })
-                    .catch(error => {
-                        hideLoading();
-                        showResults({message: 'Erreur de connexion : ' + error.message}, false);
-                    });
-                }
+                openSendRemindersModal();
             });
 
             // Chargement du QR code
@@ -274,6 +299,35 @@
             refreshBtn.addEventListener('click', function() {
                 location.reload();
             });
+
+            function openSendRemindersModal() {
+                document.getElementById('sendRemindersModal').classList.remove('hidden');
+            }
+
+            function closeSendRemindersModal() {
+                document.getElementById('sendRemindersModal').classList.add('hidden');
+            }
+
+            function confirmSendReminders() {
+                closeSendRemindersModal();
+                showLoading();
+                
+                fetch('/whatsapp/send-reminders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    showResults(data, data.success);
+                })
+                .catch(error => {
+                    hideLoading();
+                    showResults({message: 'Erreur de connexion : ' + error.message}, false);
+                });
+            }
         });
     </script>
 </x-app-layout>

@@ -41,6 +41,43 @@ class WhatsAppAutomationService
     }
     
     /**
+     * Envoyer un fichier PDF via WhatsApp
+     */
+    public function sendPDFFile(string $number, string $filePath, string $caption = ''): array
+    {
+        try {
+            // Nettoyer et formater le numéro
+            $cleanNumber = $this->formatPhoneNumber($number);
+            
+            // Vérifier que le fichier existe
+            if (!file_exists($filePath)) {
+                throw new Exception("Le fichier PDF n'existe pas: {$filePath}");
+            }
+            
+            $response = Http::timeout($this->timeout)
+                ->attach('file', file_get_contents($filePath), basename($filePath))
+                ->post($this->baseUrl . '/send-file', [
+                    'number' => $cleanNumber,
+                    'caption' => $caption
+                ]);
+            
+            if ($response->successful()) {
+                $result = $response->json();
+                Log::info("Fichier PDF WhatsApp envoyé à {$cleanNumber}: " . basename($filePath));
+                return $result;
+            }
+            
+            throw new Exception('Erreur lors de l\'envoi du fichier: ' . $response->body());
+        } catch (Exception $e) {
+            Log::error("Erreur envoi fichier WhatsApp à {$number}: " . $e->getMessage());
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
      * Envoyer un message WhatsApp unique
      */
     public function sendMessage(string $number, string $message): array

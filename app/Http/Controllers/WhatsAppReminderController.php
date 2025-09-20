@@ -7,9 +7,17 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use App\Services\WhatsAppAutomationService;
 
 class WhatsAppReminderController extends Controller
 {
+    protected $whatsappService;
+
+    public function __construct(WhatsAppAutomationService $whatsappService)
+    {
+        $this->whatsappService = $whatsappService;
+    }
+
     /**
      * Show the WhatsApp reminders dashboard
      */
@@ -25,10 +33,18 @@ class WhatsAppReminderController extends Controller
         // Count clients with expiring subscriptions
         $expiringCount = $this->getExpiringClientsCount();
         
+        // Vérifier le statut du service WhatsApp
+        $serviceStatus = $this->whatsappService->getStatus();
+        $isServiceAvailable = $this->whatsappService->isServiceAvailable();
+        $isWhatsAppConnected = $this->whatsappService->isWhatsAppConnected();
+        
         return view('whatsapp.index', [
             'fileExists' => $fileExists,
             'filename' => $filename,
             'expiringCount' => $expiringCount,
+            'serviceStatus' => $serviceStatus,
+            'isServiceAvailable' => $isServiceAvailable,
+            'isWhatsAppConnected' => $isWhatsAppConnected,
         ]);
     }
     

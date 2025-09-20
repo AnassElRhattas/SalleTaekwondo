@@ -27,9 +27,9 @@
                     <x-nav-link :href="route('whatsapp.management')" :active="request()->routeIs('whatsapp.management')">
                         {{ __('Rappels WhatsApp') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('whatsapp.index')" :active="request()->routeIs('whatsapp.index')">
+                    <!-- <x-nav-link :href="route('whatsapp.index')" :active="request()->routeIs('whatsapp.index')">
                         {{ __('Rappels WhatsApp') }}
-                    </x-nav-link>
+                    </x-nav-link> -->
                 </div>
             </div>
 

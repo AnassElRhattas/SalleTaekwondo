@@ -90,8 +90,62 @@ class PaymentTrackingController extends Controller
         if (!$client->payer_abon || Carbon::parse($client->payer_abon)->lt($monthDate)) {
             $client->payer_abon = $monthDate;
             $client->save();
+            
+            // Générer et envoyer le reçu via WhatsApp
+            $this->generateAndSendReceipt($client);
         }
         
-        return redirect()->back()->with('success', 'Paiement validé pour ' . $client->name);
+        return redirect()->back()->with('success', 'Paiement validé pour ' . $client->name . '. Reçu envoyé via WhatsApp.');
+    }
+
+    /**
+     * Générer un reçu et l'envoyer via WhatsApp
+     */
+    private function generateAndSendReceipt(Client $client): void
+    {
+        try {
+            // Vérifier si le client a un numéro de téléphone
+            if (empty($client->phone)) {
+                \Log::warning("Client {$client->name} n'a pas de numéro de téléphone pour l'envoi du reçu");
+                return;
+            }
+
+            $receiptService = new \App\Services\ReceiptService();
+            $whatsappService = new \App\Services\WhatsAppAutomationService();
+
+            // Générer le reçu PDF
+            $receiptData = $receiptService->generateReceipt($client);
+            
+            // Formater le message d'accompagnement pour WhatsApp
+            $whatsappMessage = $receiptService->formatReceiptForWhatsApp($client);
+
+            // Vérifier si le service WhatsApp est disponible
+            if ($whatsappService->isServiceAvailable() && $whatsappService->isWhatsAppConnected()) {
+                // Envoyer d'abord le message de confirmation
+                $messageResult = $whatsappService->sendMessage($client->phone, $whatsappMessage);
+                
+                if ($messageResult['success']) {
+                    // Ensuite envoyer le fichier PDF
+                    $fileResult = $whatsappService->sendPDFFile(
+                        $client->phone, 
+                        $receiptData['path'], 
+                        "🧾 Voici votre reçu officiel de paiement (PDF)"
+                    );
+                    
+                    if ($fileResult['success']) {
+                        \Log::info("Reçu PDF envoyé avec succès à {$client->name} ({$client->phone})");
+                    } else {
+                        \Log::error("Erreur lors de l'envoi du PDF à {$client->name}: " . $fileResult['error']);
+                    }
+                } else {
+                    \Log::error("Erreur lors de l'envoi du message à {$client->name}: " . $messageResult['error']);
+                }
+            } else {
+                \Log::warning("Service WhatsApp non disponible pour l'envoi du reçu à {$client->name}");
+            }
+
+        } catch (\Exception $e) {
+            \Log::error("Erreur lors de la génération/envoi du reçu pour {$client->name}: " . $e->getMessage());
+        }
     }
 }
